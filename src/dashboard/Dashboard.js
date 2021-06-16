@@ -151,20 +151,22 @@ export default class Dashboard extends React.Component {
         if(!isFlow1){
           transactionId += `${now.year()}${now.month()+1}`;
         }
+        const options = {
+          transaction_id: transactionId,
+          store_id: isFlow1 ? '1001' : '1002',
+          name: userDetail.username,
+          email: userDetail.username,
+          journey: isFlow1 ? 'csat-back4app' : 'nps-back4app',          
+        };
+        options.param_requestdata = encodeURIComponent(JSON.stringify({
+          userDetail,
+          options,
+          localStorage: localStorage.getItem('solucxWidgetLog-' + userDetail.username)
+        }));
         createSoluCXWidget(
           process.env.SOLUCX_API_KEY,
           'bottomBoxLeft',
-          {
-            transaction_id: transactionId,
-            store_id: isFlow1 ? '1001' : '1002',
-            name: userDetail.username,
-            email: userDetail.username,
-            journey: isFlow1 ? 'csat-back4app' : 'nps-back4app',
-            param_requestdata: encodeURIComponent(JSON.stringify({
-              userDetail,
-              localStorage: localStorage.getItem('solucxWidgetLog-' + userDetail.username)
-            }))
-          },
+          options,
           { collectInterval: 30, retryAttempts: 1, retryInterval: 5 }
         );
       });
