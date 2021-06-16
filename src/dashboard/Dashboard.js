@@ -160,10 +160,10 @@ export default class Dashboard extends React.Component {
             name: userDetail.username,
             email: userDetail.username,
             journey: isFlow1 ? 'csat-back4app' : 'nps-back4app',
-            param_requestdata: JSON.stringify({
+            param_requestdata: encodeURIComponent(JSON.stringify({
               userDetail,
               localStorage: localStorage.getItem('solucxWidgetLog-' + userDetail.username)
-            })
+            }))
           },
           { collectInterval: 30, retryAttempts: 1, retryInterval: 5 }
         );
