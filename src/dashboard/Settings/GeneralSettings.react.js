@@ -523,7 +523,6 @@ export default class GeneralSettings extends DashboardView {
         initialFields={initialFields}
         footerContents={({changes}) => renderFlowFooterChanges(changes, initialFields, generalFieldsOptions)}
         onSubmit={({ changes }) => {
-          console.log(changes);
           let promiseList = [];
           if (changes.requestLimit !== undefined) {
             promiseList.push(this.context.currentApp.setRequestLimit(changes.requestLimit));
