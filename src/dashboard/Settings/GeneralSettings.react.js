@@ -489,6 +489,8 @@ export default class GeneralSettings extends DashboardView {
       collaborators: this.props.initialFields.collaborators,
       waiting_collaborators: this.props.initialFields.waiting_collaborators,
       mongoURL: this.context.currentApp.settings.fields.fields.opendb_connection_string,
+      accountLockout: this.context.currentApp.accountLockout,
+      passwordPolicy: this.context.currentApp.passwordPolicy
     };
 
     let collaboratorRemovedWarningModal = this.state.removedCollaborators.length > 0 ? <Modal
@@ -579,7 +581,6 @@ export default class GeneralSettings extends DashboardView {
           });
         }}
         renderForm={({ fields, setField }) => {
-          console.log(this.context.currentApp);
           //let isCollaborator = AccountManager.currentUser().email !== this.props.initialFields.owner_email;
           return <div className={styles.settings_page}>
             <AppInformationFields
@@ -610,9 +611,9 @@ export default class GeneralSettings extends DashboardView {
               isCollaborator={AccountManager.currentUser().email !== this.props.initialFields.owner_email}
               hasCollaborators={fields.collaborators.length > 0}
               appSlug={this.context.currentApp.slug}
-              accountLockout={this.context.currentApp.accountLockout}
+              accountLockout={fields.accountLockout}
               setAccountLockout={setField.bind(this, 'accountLockout')}
-              passwordPolicy={this.context.currentApp.passwordPolicy}
+              passwordPolicy={fields.passwordPolicy}
               setPasswordPolicy={setField.bind(this, 'passwordPolicy')}
               cleanUpFiles={() => this.setState({showPurgeFilesModal: true})}
               cleanUpFilesMessage={this.state.cleanupFilesMessage}
@@ -689,6 +690,14 @@ let generalFieldsOptions = {
   },
   appName: {
     friendlyName: 'app name',
+    showTo: true,
+  },
+  accountLockout: {
+    friendlyName: 'Account Lockout',
+    showTo: true,
+  },
+  passwordPolicy: {
+    friendlyName: 'Password Policy',
     showTo: true,
   },
   //TODO: This will display 'enabled production' or 'disabled production' which is sub-optimal. Try to make it better.
