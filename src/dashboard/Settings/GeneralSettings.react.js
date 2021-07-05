@@ -157,6 +157,10 @@ let ManageAppFields = ({
   transferApp,
   transferAppMessage,
   deleteApp,
+  setAccountLockout,
+  accountLockout,
+  setPasswordPolicy,
+  passwordPolicy,
 }) => {
   let migrateAppField = null;
   if (!mongoURL && !hasInProgressMigration) {
@@ -219,6 +223,20 @@ let ManageAppFields = ({
     <Fieldset
       legend='App Management'
       description='These options will affect your entire app.' >
+      <Field
+        labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
+        label={<Label text='Account lockout' />}
+        input={<TextInput
+          value={accountLockout}
+          onChange={setAccountLockout} />
+        } />
+      <Field
+        labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
+        label={<Label text='Password policy' />}
+        input={<TextInput
+          value={passwordPolicy}
+          onChange={setPasswordPolicy} />
+        } />
       <Field
         labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
         label={<Label
@@ -503,6 +521,7 @@ export default class GeneralSettings extends DashboardView {
         initialFields={initialFields}
         footerContents={({changes}) => renderFlowFooterChanges(changes, initialFields, generalFieldsOptions)}
         onSubmit={({ changes }) => {
+          console.log(changes);
           let promiseList = [];
           if (changes.requestLimit !== undefined) {
             promiseList.push(this.context.currentApp.setRequestLimit(changes.requestLimit));
@@ -510,10 +529,16 @@ export default class GeneralSettings extends DashboardView {
           if (changes.appName !== undefined) {
             promiseList.push(this.context.currentApp.setAppName(changes.appName));
           }
+          if (changes.accountLockout !== undefined) {
+            promiseList.push(this.context.currentApp.setAccountLockout(changes.accountLockout));
+          }
+          // passwordPolicy
+          if (changes.passwordPolicy !== undefined) {
+            promiseList.push(this.context.currentApp.setPasswordPolicy(changes.passwordPolicy));
+          }
           if (changes.inProduction !== undefined) {
             promiseList.push(this.context.currentApp.setInProduction(changes.inProduction));
           }
-          
           let removedCollaborators;
           if (changes.collaborators !== undefined) {
             let addedCollaborators = setDifference(changes.collaborators, initialFields.collaborators, compareCollaborators);
@@ -554,6 +579,7 @@ export default class GeneralSettings extends DashboardView {
           });
         }}
         renderForm={({ fields, setField }) => {
+          console.log(this.context.currentApp);
           //let isCollaborator = AccountManager.currentUser().email !== this.props.initialFields.owner_email;
           return <div className={styles.settings_page}>
             <AppInformationFields
@@ -584,6 +610,10 @@ export default class GeneralSettings extends DashboardView {
               isCollaborator={AccountManager.currentUser().email !== this.props.initialFields.owner_email}
               hasCollaborators={fields.collaborators.length > 0}
               appSlug={this.context.currentApp.slug}
+              accountLockout={this.context.currentApp.accountLockout}
+              setAccountLockout={setField.bind(this, 'accountLockout')}
+              passwordPolicy={this.context.currentApp.passwordPolicy}
+              setPasswordPolicy={setField.bind(this, 'passwordPolicy')}
               cleanUpFiles={() => this.setState({showPurgeFilesModal: true})}
               cleanUpFilesMessage={this.state.cleanupFilesMessage}
               cleanUpMessageColor={this.state.cleanupNoteColor}
