@@ -276,9 +276,19 @@ let ManageAppFields = ({
               description='Failed login attempts threshold'
             />}
             input={
-              <TextInput
+              <NumericInput
                 value={ passwordPolicy && passwordPolicy.length > 0 ? JSON.parse(passwordPolicy).threshold : '' }
                 onChange={threshold => {
+                  try {
+                    const thresholdNum = parseInt(threshold);
+                    if ( thresholdNum <= 0 || thresholdNum > 1000 ) {
+                      return;
+                    }
+                  }
+                  catch(e) {
+                    console.error(e);
+                    return;
+                  }
                   let passWordPolicyJson = {};
                   if ( passwordPolicy ) {
                     let json = JSON.parse(passwordPolicy);
