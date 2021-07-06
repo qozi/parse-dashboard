@@ -32,12 +32,12 @@ import renderFlowFooterChanges           from 'lib/renderFlowFooterChanges';
 import setDifference                     from 'lib/setDifference';
 import styles                            from 'dashboard/Settings/Settings.scss';
 import TextInput                         from 'components/TextInput/TextInput.react';
-import Toggle                            from 'components/Toggle/Toggle.react';
+import NumericInput                      from 'components/NumericInput/NumericInput.react';
 import Toolbar                           from 'components/Toolbar/Toolbar.react';
 import unique                            from 'lib/unique';
 import validateAndSubmitConnectionString from 'lib/validateAndSubmitConnectionString';
 import { cost, features }                from 'dashboard/Settings/GeneralSettings.scss';
-import { Link }                          from 'react-router-dom';
+import CodeEditor                        from 'components/CodeEditor/CodeEditor.react';
 
 const DEFAULT_SETTINGS_LABEL_WIDTH = 55;
 
@@ -232,11 +232,67 @@ let ManageAppFields = ({
         } />
       <Field
         labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
-        label={<Label text='Password policy' />}
-        input={<TextInput
-          value={passwordPolicy}
-          onChange={setPasswordPolicy} />
-        } />
+        label={<Label
+            text='Password policy'
+            description={<span>Manage password policies for this</span>}
+          />}
+        input={
+          <div>
+          <Field
+            labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
+            label={<Label
+              text='Duration'
+              description='Account lockout duration'
+            />}
+            input={
+              <NumericInput
+                value={ passwordPolicy && passwordPolicy.length > 0 ? JSON.parse(passwordPolicy).duration : '' }
+                onChange={duration => {
+                  try {
+                    const durationNum = parseInt(duration);
+                    if ( durationNum <= 0 || durationNum > 99999 ) {
+                      return;
+                    }
+                  }
+                  catch(e) {
+                    console.error(e);
+                    return;
+                  }
+                  let passWordPolicyJson = {};
+                  if ( passwordPolicy ) {
+                    let json = JSON.parse(passwordPolicy);
+                    if ( 'threshold' in json ) {
+                      passWordPolicyJson = { threshold: json.threshold }
+                    }
+                  }
+                  setPasswordPolicy(JSON.stringify({ ...passWordPolicyJson, duration }));
+                }} />
+            }
+          />
+          <Field
+            labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
+            label={<Label
+              text='Threshold'
+              description='Failed login attempts threshold'
+            />}
+            input={
+              <TextInput
+                value={ passwordPolicy && passwordPolicy.length > 0 ? JSON.parse(passwordPolicy).threshold : '' }
+                onChange={threshold => {
+                  let passWordPolicyJson = {};
+                  if ( passwordPolicy ) {
+                    let json = JSON.parse(passwordPolicy);
+                    if ( 'duration' in json ) {
+                      passWordPolicyJson = { duration: json.duration }
+                    }
+                  }
+                  setPasswordPolicy(JSON.stringify({ ...passWordPolicyJson, threshold }));
+                }} />
+            }
+          />
+          </div>
+        }
+      />
       <Field
         labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
         label={<Label
