@@ -236,6 +236,7 @@ let ManageAppFields = ({
             />}
             input={
               <NumericInput
+                min={0}
                 defaultValue={ accountLockout && accountLockout.length > 0 ? JSON.parse(accountLockout).resetTokenValidityDuration : '' }
                 onChange={resetTokenValidityDuration => {
                   try {
@@ -378,6 +379,7 @@ let ManageAppFields = ({
             />}
             input={
               <NumericInput
+                min={0}
                 defaultValue={ accountLockout && accountLockout.length > 0 ? JSON.parse(accountLockout).maxPasswordAge : false }
                 onChange={maxPasswordAge => {
                   let accountLockoutJson = {};
@@ -400,6 +402,7 @@ let ManageAppFields = ({
             />}
             input={
               <NumericInput
+                min={0}
                 defaultValue={ accountLockout && accountLockout.length > 0 ? JSON.parse(accountLockout).maxPasswordHistory : false }
                 onChange={maxPasswordHistory => {
                   let accountLockoutJson = {};
@@ -433,6 +436,7 @@ let ManageAppFields = ({
             />}
             input={
               <NumericInput
+                min={0}
                 defaultValue={ passwordPolicy && passwordPolicy.length > 0 ? JSON.parse(passwordPolicy).duration : '' }
                 onChange={duration => {
                   try {
@@ -464,6 +468,7 @@ let ManageAppFields = ({
             />}
             input={
               <NumericInput
+                min={0}
                 defaultValue={ passwordPolicy && passwordPolicy.length > 0 ? JSON.parse(passwordPolicy).threshold : '' }
                 onChange={threshold => {
                   try {

@@ -46,6 +46,7 @@ export default class NumericInput extends React.Component {
         ref="input"
         id={this.props.id}
         type={'number'}
+        min={this.props.min}
         disabled={!!this.props.disabled}
         className={classes.join(' ')}
         style={{height: this.props.height || 80}}
