@@ -17,7 +17,8 @@ const AppsManager = {
 
   apps() {
     appsStore.sort(function(app1, app2) {
-      return app1.name.localeCompare(app2.name);
+      if (app1.name)
+        return app1.name.localeCompare(app2.name);
     });
     return appsStore;
   },
@@ -40,6 +41,7 @@ const AppsManager = {
       payload.parse_app.connectionString = connectionURL;
     }
     return post('/apps', payload).then((response) => {
+      console.log(response);
       let newApp = new ParseApp(response.app);
       appsStore.push(newApp);
       return newApp;

@@ -690,12 +690,23 @@ export default class ParseApp {
   setAppConfig(name, accountLockout, passwordPolicy) {
     let config = {};
     if ( name ) config['appName'] = name;
-    if ( accountLockout ) config['accountLockout'] = accountLockout;
-    if ( passwordPolicy ) config['passwordPolicy'] = passwordPolicy;
+    if ( accountLockout ) {
+      if ( !config['otherConfigs'] ) config['otherConfigs'] = {};
+      config['otherConfigs']['accountLockout'] = JSON.parse(accountLockout);
+    }
+    if ( passwordPolicy ) {
+      if ( !config['otherConfigs'] ) config['otherConfigs'] = {};
+      config['otherConfigs']['passwordPolicy'] = JSON.parse(passwordPolicy);
+    }
     let path = `${b4aSettings.BACK4APP_API_PATH}/parse-app/${this.slug}`;
     let promise = axios.patch(path, config, { withCredentials: true });
     promise.then(() => {
-      this.name = name;
+      if (name)
+        this.name = name;
+      if(accountLockout)
+        this.accountLockout = accountLockout;
+      if(passwordPolicy)
+        this.passwordPolicy = passwordPolicy;
     });
     return promise;
   }

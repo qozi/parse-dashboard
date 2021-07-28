@@ -236,7 +236,7 @@ let ManageAppFields = ({
             />}
             input={
               <NumericInput
-                value={ accountLockout && accountLockout.length > 0 ? JSON.parse(accountLockout).resetTokenValidityDuration : '' }
+                defaultValue={ accountLockout && accountLockout.length > 0 ? JSON.parse(accountLockout).resetTokenValidityDuration : '' }
                 onChange={resetTokenValidityDuration => {
                   try {
                     const resetTokenValidityDurationNum = parseFloat(resetTokenValidityDuration);
@@ -268,7 +268,7 @@ let ManageAppFields = ({
             />}
             input={
               <Toggle
-                value={ accountLockout && accountLockout.length > 0 ? JSON.parse(accountLockout).resetTokenReuseIfValid : false }
+                defaultValue={ accountLockout && accountLockout.length > 0 ? JSON.parse(accountLockout).resetTokenReuseIfValid : false }
                 onChange={resetTokenReuseIfValid => {
                   let accountLockoutJson = {};
                   if ( accountLockout ) {
@@ -290,7 +290,7 @@ let ManageAppFields = ({
             />}
             input={
               <TextInput
-                value={ accountLockout && accountLockout.length > 0 ? JSON.parse(accountLockout).validatorCallback : '' }
+                defaultValue={ accountLockout && accountLockout.length > 0 ? JSON.parse(accountLockout).validatorCallback : '' }
                 onChange={validatorCallback => {
                   let accountLockoutJson = {};
                   if ( accountLockout ) {
@@ -312,7 +312,7 @@ let ManageAppFields = ({
             />}
             input={
               <TextInput
-                value={ accountLockout && accountLockout.length > 0 ? JSON.parse(accountLockout).validatorPattern : '' }
+                defaultValue={ accountLockout && accountLockout.length > 0 ? JSON.parse(accountLockout).validatorPattern : '' }
                 onChange={validatorPattern => {
                   let accountLockoutJson = {};
                   if ( accountLockout ) {
@@ -334,7 +334,7 @@ let ManageAppFields = ({
             />}
             input={
               <TextInput
-                value={ accountLockout && accountLockout.length > 0 ? JSON.parse(accountLockout).validationError : '' }
+                defaultValue={ accountLockout && accountLockout.length > 0 ? JSON.parse(accountLockout).validationError : '' }
                 onChange={validationError => {
                   let accountLockoutJson = {};
                   if ( accountLockout ) {
@@ -356,7 +356,7 @@ let ManageAppFields = ({
             />}
             input={
               <Toggle
-                value={ accountLockout && accountLockout.length > 0 ? JSON.parse(accountLockout).doNotAllowUsername : false }
+                defaultValue={ accountLockout && accountLockout.length > 0 ? JSON.parse(accountLockout).doNotAllowUsername : false }
                 onChange={doNotAllowUsername => {
                   let accountLockoutJson = {};
                   if ( accountLockout ) {
@@ -378,7 +378,7 @@ let ManageAppFields = ({
             />}
             input={
               <NumericInput
-                value={ accountLockout && accountLockout.length > 0 ? JSON.parse(accountLockout).maxPasswordAge : false }
+                defaultValue={ accountLockout && accountLockout.length > 0 ? JSON.parse(accountLockout).maxPasswordAge : false }
                 onChange={maxPasswordAge => {
                   let accountLockoutJson = {};
                   if ( accountLockout ) {
@@ -400,7 +400,7 @@ let ManageAppFields = ({
             />}
             input={
               <NumericInput
-                value={ accountLockout && accountLockout.length > 0 ? JSON.parse(accountLockout).maxPasswordHistory : false }
+                defaultValue={ accountLockout && accountLockout.length > 0 ? JSON.parse(accountLockout).maxPasswordHistory : false }
                 onChange={maxPasswordHistory => {
                   let accountLockoutJson = {};
                   if ( accountLockout ) {
@@ -433,7 +433,7 @@ let ManageAppFields = ({
             />}
             input={
               <NumericInput
-                value={ passwordPolicy && passwordPolicy.length > 0 ? JSON.parse(passwordPolicy).duration : '' }
+                defaultValue={ passwordPolicy && passwordPolicy.length > 0 ? JSON.parse(passwordPolicy).duration : '' }
                 onChange={duration => {
                   try {
                     const durationNum = parseInt(duration);
@@ -464,7 +464,7 @@ let ManageAppFields = ({
             />}
             input={
               <NumericInput
-                value={ passwordPolicy && passwordPolicy.length > 0 ? JSON.parse(passwordPolicy).threshold : '' }
+                defaultValue={ passwordPolicy && passwordPolicy.length > 0 ? JSON.parse(passwordPolicy).threshold : '' }
                 onChange={threshold => {
                   try {
                     const thresholdNum = parseInt(threshold);
