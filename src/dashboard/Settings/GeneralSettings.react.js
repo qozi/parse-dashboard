@@ -157,10 +157,8 @@ let ManageAppFields = ({
   transferApp,
   transferAppMessage,
   deleteApp,
-  setAccountLockout,
-  accountLockout,
-  setPasswordPolicy,
-  passwordPolicy,
+  parseOptions,
+  setParseOptions
 }) => {
   let migrateAppField = null;
   if (!mongoURL && !hasInProgressMigration) {
@@ -219,6 +217,9 @@ let ManageAppFields = ({
         value='Change connection string' />} />
     ];
   }
+
+  const { accountLockout, passwordPolicy } = JSON.parse(parseOptions);
+
   return (
     <Fieldset
       legend='App Management'
@@ -237,7 +238,7 @@ let ManageAppFields = ({
             input={
               <NumericInput
                 min={0}
-                defaultValue={ accountLockout && accountLockout.length > 0 ? JSON.parse(accountLockout).resetTokenValidityDuration : '' }
+                defaultValue={ accountLockout && accountLockout.length > 0 ? accountLockout.resetTokenValidityDuration : '' }
                 onChange={resetTokenValidityDuration => {
                   try {
                     const resetTokenValidityDurationNum = parseFloat(resetTokenValidityDuration);
@@ -257,7 +258,7 @@ let ManageAppFields = ({
                     }
                     accountLockoutJson = json;
                   }
-                  setAccountLockout(JSON.stringify({ ...accountLockoutJson, resetTokenValidityDuration }));
+                  setParseOptions(JSON.stringify({ parseOptions:  { ...parseOptions, ...accountLockoutJson, resetTokenValidityDuration } }));
                 }} />
             }
           />
@@ -269,7 +270,7 @@ let ManageAppFields = ({
             />}
             input={
               <Toggle
-                defaultValue={ accountLockout && accountLockout.length > 0 ? JSON.parse(accountLockout).resetTokenReuseIfValid : false }
+                defaultValue={ accountLockout && accountLockout.length > 0 ? accountLockout.resetTokenReuseIfValid : false }
                 onChange={resetTokenReuseIfValid => {
                   let accountLockoutJson = {};
                   if ( accountLockout ) {
@@ -279,7 +280,7 @@ let ManageAppFields = ({
                     }
                     accountLockoutJson = json;
                   }
-                  setAccountLockout(JSON.stringify({ ...accountLockoutJson, resetTokenReuseIfValid }));
+                  setParseOptions(JSON.stringify({ parseOptions:  { ...parseOptions, ...accountLockoutJson, resetTokenReuseIfValid } }));
                 }} />
             }
           />
@@ -291,7 +292,7 @@ let ManageAppFields = ({
             />}
             input={
               <TextInput
-                defaultValue={ accountLockout && accountLockout.length > 0 ? JSON.parse(accountLockout).validatorCallback : '' }
+                defaultValue={ accountLockout && accountLockout.length > 0 ? accountLockout.validatorCallback : '' }
                 onChange={validatorCallback => {
                   let accountLockoutJson = {};
                   if ( accountLockout ) {
@@ -301,7 +302,7 @@ let ManageAppFields = ({
                     }
                     accountLockoutJson = json;
                   }
-                  setAccountLockout(JSON.stringify({ ...accountLockoutJson, validatorCallback }));
+                  setParseOptions(JSON.stringify({ parseOptions:  { ...parseOptions, ...accountLockoutJson, validatorCallback } }));
                 }} />
             }
           />
@@ -313,7 +314,7 @@ let ManageAppFields = ({
             />}
             input={
               <TextInput
-                defaultValue={ accountLockout && accountLockout.length > 0 ? JSON.parse(accountLockout).validatorPattern : '' }
+                defaultValue={ accountLockout && accountLockout.length > 0 ? accountLockout.validatorPattern : '' }
                 onChange={validatorPattern => {
                   let accountLockoutJson = {};
                   if ( accountLockout ) {
@@ -323,7 +324,7 @@ let ManageAppFields = ({
                     }
                     accountLockoutJson = json;
                   }
-                  setAccountLockout(JSON.stringify({ ...accountLockoutJson, validatorPattern }));
+                  setParseOptions(JSON.stringify({ parseOptions:  { ...parseOptions, ...accountLockoutJson, validatorPattern } }));
                 }} />
             }
           />
@@ -335,7 +336,7 @@ let ManageAppFields = ({
             />}
             input={
               <TextInput
-                defaultValue={ accountLockout && accountLockout.length > 0 ? JSON.parse(accountLockout).validationError : '' }
+                defaultValue={ accountLockout && accountLockout.length > 0 ? accountLockout.validationError : '' }
                 onChange={validationError => {
                   let accountLockoutJson = {};
                   if ( accountLockout ) {
@@ -345,7 +346,7 @@ let ManageAppFields = ({
                     }
                     accountLockoutJson = json;
                   }
-                  setAccountLockout(JSON.stringify({ ...accountLockoutJson, validationError }));
+                  setParseOptions(JSON.stringify({ parseOptions:  { ...parseOptions, ...accountLockoutJson, validationError } }));
                 }} />
             }
           />
@@ -357,7 +358,7 @@ let ManageAppFields = ({
             />}
             input={
               <Toggle
-                defaultValue={ accountLockout && accountLockout.length > 0 ? JSON.parse(accountLockout).doNotAllowUsername : false }
+                defaultValue={ accountLockout && accountLockout.length > 0 ? accountLockout.doNotAllowUsername : false }
                 onChange={doNotAllowUsername => {
                   let accountLockoutJson = {};
                   if ( accountLockout ) {
@@ -367,7 +368,7 @@ let ManageAppFields = ({
                     }
                     accountLockoutJson = json;
                   }
-                  setAccountLockout(JSON.stringify({ ...accountLockoutJson, doNotAllowUsername }));
+                  setParseOptions(JSON.stringify({ parseOptions:  { ...parseOptions, ...accountLockoutJson, doNotAllowUsername } }));
                 }} />
             }
           />
@@ -380,7 +381,7 @@ let ManageAppFields = ({
             input={
               <NumericInput
                 min={0}
-                defaultValue={ accountLockout && accountLockout.length > 0 ? JSON.parse(accountLockout).maxPasswordAge : false }
+                defaultValue={ accountLockout && accountLockout.length > 0 ? accountLockout.maxPasswordAge : false }
                 onChange={maxPasswordAge => {
                   let accountLockoutJson = {};
                   if ( accountLockout ) {
@@ -390,7 +391,7 @@ let ManageAppFields = ({
                     }
                     accountLockoutJson = json;
                   }
-                  setAccountLockout(JSON.stringify({ ...accountLockoutJson, maxPasswordAge }));
+                  setParseOptions(JSON.stringify({ parseOptions:  { ...parseOptions, ...accountLockoutJson, maxPasswordAge } }));
                 }} />
             }
           />
@@ -403,7 +404,7 @@ let ManageAppFields = ({
             input={
               <NumericInput
                 min={0}
-                defaultValue={ accountLockout && accountLockout.length > 0 ? JSON.parse(accountLockout).maxPasswordHistory : false }
+                defaultValue={ accountLockout && accountLockout.length > 0 ? accountLockout.maxPasswordHistory : false }
                 onChange={maxPasswordHistory => {
                   let accountLockoutJson = {};
                   if ( accountLockout ) {
@@ -413,7 +414,7 @@ let ManageAppFields = ({
                     }
                     accountLockoutJson = json;
                   }
-                  setAccountLockout(JSON.stringify({ ...accountLockoutJson, maxPasswordHistory }));
+                  setParseOptions(JSON.stringify({ parseOptions:  { ...parseOptions, ...accountLockoutJson, maxPasswordHistory } }));
                 }} />
             }
           />
@@ -437,7 +438,7 @@ let ManageAppFields = ({
             input={
               <NumericInput
                 min={0}
-                defaultValue={ passwordPolicy && passwordPolicy.length > 0 ? JSON.parse(passwordPolicy).duration : '' }
+                defaultValue={ passwordPolicy && passwordPolicy.length > 0 ? passwordPolicy.duration : '' }
                 onChange={duration => {
                   try {
                     const durationNum = parseInt(duration);
@@ -456,7 +457,7 @@ let ManageAppFields = ({
                       passWordPolicyJson = { threshold: json.threshold }
                     }
                   }
-                  setPasswordPolicy(JSON.stringify({ ...passWordPolicyJson, duration }));
+                  setParseOptions(JSON.stringify({ parseOptions:  { ...parseOptions, ...passWordPolicyJson, duration } }));
                 }} />
             }
           />
@@ -469,7 +470,7 @@ let ManageAppFields = ({
             input={
               <NumericInput
                 min={0}
-                defaultValue={ passwordPolicy && passwordPolicy.length > 0 ? JSON.parse(passwordPolicy).threshold : '' }
+                defaultValue={ passwordPolicy && passwordPolicy.length > 0 ? passwordPolicy.threshold : '' }
                 onChange={threshold => {
                   try {
                     const thresholdNum = parseInt(threshold);
@@ -861,10 +862,8 @@ export default class GeneralSettings extends DashboardView {
               isCollaborator={AccountManager.currentUser().email !== this.props.initialFields.owner_email}
               hasCollaborators={fields.collaborators.length > 0}
               appSlug={this.context.currentApp.slug}
-              accountLockout={fields.accountLockout}
-              setAccountLockout={setField.bind(this, 'accountLockout')}
-              passwordPolicy={fields.passwordPolicy}
-              setPasswordPolicy={setField.bind(this, 'passwordPolicy')}
+              parseOptions={fields.parseOptions}
+              setParseOptions={setField.bind(this, 'parseOptions')}
               cleanUpFiles={() => this.setState({showPurgeFilesModal: true})}
               cleanUpFilesMessage={this.state.cleanupFilesMessage}
               cleanUpMessageColor={this.state.cleanupNoteColor}
