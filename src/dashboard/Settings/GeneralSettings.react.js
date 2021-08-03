@@ -280,7 +280,7 @@ let ManageAppFields = ({
                     }
                     accountLockoutJson = json;
                   }
-                  setParseOptions(JSON.stringify({ { ...parseOptions, ...accountLockoutJson, resetTokenReuseIfValid } ));
+                  setParseOptions(JSON.stringify({ ...parseOptions, ...accountLockoutJson, resetTokenReuseIfValid } ));
                 }} />
             }
           />
