@@ -218,7 +218,7 @@ let ManageAppFields = ({
     ];
   }
 
-  const { accountLockout, passwordPolicy } = JSON.parse(parseOptions);
+  const { accountLockout, passwordPolicy } = parseOptions ? JSON.parse(parseOptions) : { accountLockout: {}, passwordPolicy: {} };
 
   return (
     <Fieldset
