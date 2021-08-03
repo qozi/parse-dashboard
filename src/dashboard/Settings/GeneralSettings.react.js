@@ -258,7 +258,7 @@ let ManageAppFields = ({
                     }
                     accountLockoutJson = json;
                   }
-                  setParseOptions(JSON.stringify({ parseOptions:  { ...parseOptions, ...accountLockoutJson, resetTokenValidityDuration } }));
+                  setParseOptions(JSON.stringify({ ...parseOptions, ...accountLockoutJson, resetTokenValidityDuration } ));
                 }} />
             }
           />
@@ -280,7 +280,7 @@ let ManageAppFields = ({
                     }
                     accountLockoutJson = json;
                   }
-                  setParseOptions(JSON.stringify({ parseOptions:  { ...parseOptions, ...accountLockoutJson, resetTokenReuseIfValid } }));
+                  setParseOptions(JSON.stringify({ { ...parseOptions, ...accountLockoutJson, resetTokenReuseIfValid } ));
                 }} />
             }
           />
@@ -302,7 +302,7 @@ let ManageAppFields = ({
                     }
                     accountLockoutJson = json;
                   }
-                  setParseOptions(JSON.stringify({ parseOptions:  { ...parseOptions, ...accountLockoutJson, validatorCallback } }));
+                  setParseOptions(JSON.stringify({ ...parseOptions, ...accountLockoutJson, validatorCallback }));
                 }} />
             }
           />
@@ -324,7 +324,7 @@ let ManageAppFields = ({
                     }
                     accountLockoutJson = json;
                   }
-                  setParseOptions(JSON.stringify({ parseOptions:  { ...parseOptions, ...accountLockoutJson, validatorPattern } }));
+                  setParseOptions(JSON.stringify({ ...parseOptions, ...accountLockoutJson, validatorPattern }));
                 }} />
             }
           />
@@ -346,7 +346,7 @@ let ManageAppFields = ({
                     }
                     accountLockoutJson = json;
                   }
-                  setParseOptions(JSON.stringify({ parseOptions:  { ...parseOptions, ...accountLockoutJson, validationError } }));
+                  setParseOptions(JSON.stringify({ ...parseOptions, ...accountLockoutJson, validationError }));
                 }} />
             }
           />
@@ -368,7 +368,7 @@ let ManageAppFields = ({
                     }
                     accountLockoutJson = json;
                   }
-                  setParseOptions(JSON.stringify({ parseOptions:  { ...parseOptions, ...accountLockoutJson, doNotAllowUsername } }));
+                  setParseOptions(JSON.stringify({ ...parseOptions, ...accountLockoutJson, doNotAllowUsername }));
                 }} />
             }
           />
@@ -391,7 +391,7 @@ let ManageAppFields = ({
                     }
                     accountLockoutJson = json;
                   }
-                  setParseOptions(JSON.stringify({ parseOptions:  { ...parseOptions, ...accountLockoutJson, maxPasswordAge } }));
+                  setParseOptions(JSON.stringify({ ...parseOptions, ...accountLockoutJson, maxPasswordAge }));
                 }} />
             }
           />
@@ -414,7 +414,7 @@ let ManageAppFields = ({
                     }
                     accountLockoutJson = json;
                   }
-                  setParseOptions(JSON.stringify({ parseOptions:  { ...parseOptions, ...accountLockoutJson, maxPasswordHistory } }));
+                  setParseOptions(JSON.stringify({ ...parseOptions, ...accountLockoutJson, maxPasswordHistory }));
                 }} />
             }
           />
@@ -450,14 +450,14 @@ let ManageAppFields = ({
                     console.error(e);
                     return;
                   }
-                  let passWordPolicyJson = {};
+                  let passwordPolicyJson = {};
                   if ( passwordPolicy ) {
                     let json = JSON.parse(passwordPolicy);
                     if ( 'threshold' in json ) {
-                      passWordPolicyJson = { threshold: json.threshold }
+                      passwordPolicyJson = { threshold: json.threshold }
                     }
                   }
-                  setParseOptions(JSON.stringify({ parseOptions:  { ...parseOptions, ...passWordPolicyJson, duration } }));
+                  setParseOptions(JSON.stringify({ ...parseOptions, ...passwordPolicyJson, duration }));
                 }} />
             }
           />
@@ -482,14 +482,14 @@ let ManageAppFields = ({
                     console.error(e);
                     return;
                   }
-                  let passWordPolicyJson = {};
+                  let passwordPolicyJson = {};
                   if ( passwordPolicy ) {
                     let json = JSON.parse(passwordPolicy);
                     if ( 'duration' in json ) {
-                      passWordPolicyJson = { duration: json.duration }
+                      passwordPolicyJson = { duration: json.duration }
                     }
                   }
-                  setPasswordPolicy(JSON.stringify({ ...passWordPolicyJson, threshold }));
+                  setParseOptions(JSON.stringify({ ...parseOptions, ...passwordPolicyJson, threshold }));
                 }} />
             }
           />

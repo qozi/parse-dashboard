@@ -26,8 +26,7 @@ function setEnablePushSource(setting, enable) {
 export default class ParseApp {
   constructor({
     appName,
-    passwordPolicy,
-    accountLockout,
+    parseOptions,
     created_at,
     clientKey,
     appId,
@@ -52,10 +51,8 @@ export default class ParseApp {
     graphQLServerURL,
     columnPreference
   }) {
-    console.log(accountLockout);
     this.name = appName;
-    this.accountLockout = accountLockout;
-    this.passwordPolicy = passwordPolicy;
+    this.parseOptions = parseOptions;
     this.feedbackEmail = feedbackEmail;
     this.createdAt = created_at ? new Date(created_at) : new Date();
     this.applicationId = appId;
@@ -687,26 +684,17 @@ export default class ParseApp {
     return promise;
   }
 
-  setAppConfig(name, accountLockout, passwordPolicy) {
+  setAppConfig(name, parseOptions) {
     let config = {};
     if ( name ) config['appName'] = name;
-    if ( accountLockout ) {
-      if ( !config['otherConfigs'] ) config['otherConfigs'] = {};
-      config['otherConfigs']['accountLockout'] = JSON.parse(accountLockout);
-    }
-    if ( passwordPolicy ) {
-      if ( !config['otherConfigs'] ) config['otherConfigs'] = {};
-      config['otherConfigs']['passwordPolicy'] = JSON.parse(passwordPolicy);
-    }
+    if ( parseOptions ) config['parseOptions'] = parseOptions;
     let path = `${b4aSettings.BACK4APP_API_PATH}/parse-app/${this.slug}`;
     let promise = axios.patch(path, config, { withCredentials: true });
     promise.then(() => {
       if (name)
         this.name = name;
-      if(accountLockout)
-        this.accountLockout = accountLockout;
-      if(passwordPolicy)
-        this.passwordPolicy = passwordPolicy;
+      if(parseOptions)
+        this.parseOptions = parseOptions;
     });
     return promise;
   }
