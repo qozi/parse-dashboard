@@ -96,7 +96,7 @@ export default class B4ACloudCodeView extends React.Component {
         </div>
       </form>
     } */}
-      <CodeEditor code={this.props.source} />
+      <CodeEditor code={this.props.source} onCodeChange={ value => this.props.onCodeChange(value) } />
 
     </div>;
   }

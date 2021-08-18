@@ -46,6 +46,9 @@ export default class CodeEditor extends React.Component {
         theme="solarized_dark"
         onChange={value => {
           this.setState({ code: value });
+          if ( this.props.onCodeChange ){
+            this.props.onCodeChange(value);
+          }
         }}
         height={'100%'}
         fontSize={fontSize}
