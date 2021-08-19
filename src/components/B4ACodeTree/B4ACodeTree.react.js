@@ -194,9 +194,11 @@ export default class B4ACodeTree extends React.Component {
     const ecodedValue = await B4ATreeActions.encodeFile(value, 'data:plain/text;base64');
     let updatedFiles = this.getUpdatedFiles(this.state.files, ecodedValue);
     this.setState({ files: updatedFiles, source: value });
-    let config = B4ATreeActions.getConfig(updatedFiles);
-    console.log(config);
-    $('#tree').jstree(true).settings.core.data = updatedFiles;
+    this.props.setCurrentCode(updatedFiles);
+    // let config = B4ATreeActions.getConfig(updatedFiles);
+    // console.log(config);
+    // $('#tree').jstree(true).settings.core.data = updatedFiles;
+    // $('#tree').jstree(true).refresh(true);
   }
 
   componentDidMount() {
@@ -209,6 +211,9 @@ export default class B4ACodeTree extends React.Component {
     $('#tree').on('create_node.jstree', function (){
       B4ATreeActions.refreshEmptyFolderIcons();
     });
+
+    // current code.
+    this.props.setCurrentCode(this.state.files);
   }
 
   render(){
