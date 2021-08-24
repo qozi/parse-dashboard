@@ -41,6 +41,7 @@ let B4ABrowserToolbar = ({
     relation,
     setCurrent,
     onFilterChange,
+    onAbortAddRow,
     onAddColumn,
     onAddRow,
     onAddClass,
@@ -71,10 +72,11 @@ let B4ABrowserToolbar = ({
     applicationId,
     onClickIndexManager,
     onClickSecurity,
-    columns
+    columns,
+    newObject
   }) => {
   let selectionLength = Object.keys(selection).length;
-  let details = [], lockIcon = '/lock-open-variant.svg';
+  let details = [], lockIcon = false;
   if (count !== undefined) {
     if (count === 1) {
       details.push('1 object');
@@ -98,14 +100,15 @@ let B4ABrowserToolbar = ({
         // details.push('Public Write enabled');
         readWritePermissions = 'Public Write enabled';
       } else if ( !read && !write ) {
-        lockIcon = '/lock-outline.svg'
+        readWritePermissions = 'Protected';
+        lockIcon = true;
       }
     }
   }
   let menu = null;
   if (relation) {
     menu = (
-      <BrowserMenu title='Edit' icon='edit-solid'>
+      <BrowserMenu title='Edit' icon='more-icon'>
         <MenuItem
           text={`Create ${relation.targetClassName} and attach`}
           onClick={onAddRow}
@@ -124,7 +127,7 @@ let B4ABrowserToolbar = ({
     );
   } else {
     menu = (
-      <BrowserMenu title='Edit' icon='edit-solid'>
+      <BrowserMenu title='Edit' icon='more-icon'>
         <MenuItem text='Security' onClick={onClickSecurity} />
         <Separator />
         <MenuItem text='Add a row' onClick={onAddRow} />
@@ -156,6 +159,10 @@ let B4ABrowserToolbar = ({
         {enableExportClass ? <MenuItem text='Export this data' onClick={onExport} /> : <noscript />}
         <Separator />
         <MenuItem text='Index Manager' onClick={onClickIndexManager} />
+        <MenuItem text="API Reference" onClick={() => {
+          back4AppNavigation && back4AppNavigation.atApiReferenceClassesEvent()
+          window.open(`${b4aSettings.DASHBOARD_PATH}/apidocs/${applicationId}${classApiId}`, '_blank')
+        }} />
       </BrowserMenu>
     );
   }
@@ -166,7 +173,7 @@ let B4ABrowserToolbar = ({
   } else if (subsection.length > 30) {
     subsection = subsection.substr(0, 30) + '\u2026';
   }
-  const classes = [styles.toolbarButton];
+  const classes = [styles.addBtn];
   let onClick = onAddRow;
   if (isUnique) {
     classes.push(styles.toolbarButtonDisabled);
@@ -226,12 +233,30 @@ let B4ABrowserToolbar = ({
       readWritePermissions={readWritePermissions}
       lockIcon={lockIcon}
       onClickSecurity={onClickSecurity}
-      section={relation ? `Relation <${relation.targetClassName}>` : `Class | ${details.join(' \u2022 ')}`}
+      section={relation ? `Relation <${relation.targetClassName}> | ` : `Class | ${details.join(' \u2022 ')}`}
       subsection={subsection}
       details={relation ? details.join(' \u2022 ') : details.join(' \u2022 ')}
       helpsection={helpsection}>
+      {onAddRow && (
+        <a className={classes.join(' ')} onClick={onClick}>
+          <Icon name='add-outline' width={14} height={14} />
+          <span>Row</span>
+        </a>
+      )}
+      {onAddColumn && (
+        <a className={classes.join(' ')} onClick={onAddColumn}>
+          <Icon name='add-outline' width={14} height={14} />
+          <span>Column</span>
+        </a>
+      )}
+      {(
+        <a className={styles.deleteBtn + ` ${(selectionLength >= 1) && styles.active}`} onClick={selectionLength === 0 ? null : () => onDeleteRows(selection)}>
+          <Icon name='delete-icon' width={24} height={20} />
+        </a>
+      )}
+      <div className={styles.verticalSeparator}></div>
       <a className={styles.toolbarButton} onClick={onRefresh} title='Refresh'>
-        <Icon name='refresh' width={30} height={26} />
+        <Icon name='refresh-icon' width={30} height={26} />
       </a>
       <BrowserFilter
         setCurrent={setCurrent}

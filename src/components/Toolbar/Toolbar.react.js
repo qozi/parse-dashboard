@@ -37,18 +37,27 @@ let Toolbar = (props) => {
           {backButton}
         </div>
         <div className={styles.titleText}>
-          <div className={styles.section}>{props.section}</div>
-          <div>
-            <span className={styles.subsection}>
-              {props.subsection}
-            </span>
-            <div className={styles.seperatorVertical}></div>
-            {props.helpsection}
-            {/* Public read and write access */}
-            <div className={styles.publicAccess} onClick={() => props.onClickSecurity(true)}>
-              <img className={styles.publicAccessIcon} src={props.lockIcon} />
-              <a href="javascript:void(0)"><small>{props.readWritePermissions}</small></a>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div className={styles.subsection} >
+              <span className={styles.subsectionName}>
+                {props.subsection}
+              </span>
+              <span className={styles.details}>
+                {/* {!props.readWritePermissions && <div className={styles.section}>{props.section}</div>} */}
+                {props.details}
+              </span>
             </div>
+            { props.readWritePermissions && <div>  <div className={styles.seperatorVertical}></div>
+            {/* {props.helpsection} */}
+            {/* Public read and write access */}
+             <div className={styles.publicAccess} onClick={() => props.onClickSecurity(true)}>
+              { props.lockIcon === true ?
+                <Icon name='lock-outline' fill='#FFFFFF' width={17} height={17}></Icon> :
+                <Icon name='lock-open-variant' fill='#FFFFFF' width={17} height={17}></Icon>
+              }
+              <span className={styles.mr5}></span>
+              <a href="javascript:void(0)" className={styles.publicAccessLink}><small>{props.readWritePermissions}</small></a>
+            </div> </div> }
           </div>
         </div>
       </div>

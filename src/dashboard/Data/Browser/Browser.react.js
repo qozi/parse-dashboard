@@ -51,6 +51,7 @@ import withReactContent                   from 'sweetalert2-react-content';
 import postgresqlImg                      from './postgresql.png';
 import PermissionsDialog                  from 'components/PermissionsDialog/PermissionsDialog.react';
 import validateEntry                      from 'lib/validateCLPEntry.js';
+import ConfirmDeleteColumnDialog from './ConfirmDeleteColumnDialog.react';
 
 // The initial and max amount of rows fetched by lazy loading
 const MAX_ROWS_FETCHED = 200;
@@ -86,6 +87,7 @@ class Browser extends DashboardView {
       showAttachRowsDialog: false,
       showEditRowDialog: false,
       rowsToDelete: null,
+      columnToDelete: null,
 
       relation: null,
       counts: {},
@@ -108,6 +110,7 @@ class Browser extends DashboardView {
 
       isUnique: false,
       uniqueField: null,
+      keepAddingCols: false,
       showTour: !isMobile() && user && user.playDatabaseBrowserTutorial,
       renderFooterMenu: !isMobile(),
       showPostgresqlModal: !!Cookies.get('isPostgresql'),
@@ -152,6 +155,7 @@ class Browser extends DashboardView {
     this.showCreateClass = this.showCreateClass.bind(this);
     this.createClass = this.createClass.bind(this);
     this.addColumn = this.addColumn.bind(this);
+    this.addColumnAndContinue = this.addColumnAndContinue.bind(this);
     this.removeColumn = this.removeColumn.bind(this);
     this.showNote = this.showNote.bind(this);
     this.getFooterMenuButtons = this.getFooterMenuButtons.bind(this);
@@ -164,6 +168,7 @@ class Browser extends DashboardView {
     this.addEditCloneRows = this.addEditCloneRows.bind(this);
     this.abortEditCloneRows = this.abortEditCloneRows.bind(this);
     this.onClickSecurity = this.onClickSecurity.bind(this);
+    this.showColumnDelete = this.showColumnDelete.bind(this);
   }
 
   getFooterMenuButtons() {
@@ -218,6 +223,23 @@ class Browser extends DashboardView {
         this.setState({ counts: {} });
         Parse.Object._clearAllState();
       }
+      
+      // check if the changes are in currentApp serverInfo status
+      // if not return without making any request
+      if (this.props.apps !== nextProps.apps) {
+        let updatedCurrentApp = nextProps.apps.find(
+          (ap) => ap.slug === this.props.params.appId
+        );
+        let prevCurrentApp = this.props.apps.find(
+          (ap) => ap.slug === this.props.params.appId
+        );
+        const shouldUpdate =
+          updatedCurrentApp.serverInfo.status !==
+          prevCurrentApp.serverInfo.status;
+        
+        if (!shouldUpdate) return;
+      }
+
       this.prefetchData(nextProps, nextContext);
       nextProps.schema.dispatch(ActionTypes.FETCH)
       .then(() => this.handleFetchedSchema());
@@ -235,16 +257,16 @@ class Browser extends DashboardView {
         <br/>
         <pre>vehicle.set('name', <span class="intro-code-string">'Corolla'</span>);</pre>
         <pre>vehicle.set('price', <span class="intro-code-number">19499</span>);</pre>
-        <pre>vehicle.set('color' <span class="intro-code-string">'black'</span>);</pre>
+        <pre>vehicle.set('color', <span class="intro-code-string">'black'</span>);</pre>
         <br/>
-        <pre>vehicle.save().then(savedObject => {</pre>
+        <pre><span class="intro-code-keyword">try</span> {</pre>
+        <pre>  <span class="intro-code-keyword">const</span> savedObject = <span class="intro-code-keyword">await</span> vehicle.save(); </pre>
         <pre>  <span class="intro-code-comment">// The class is automatically created on</span></pre>
         <pre>  <span class="intro-code-comment">// the back-end when saving the object!</span></pre>
         <pre>  console.log(savedObject);</pre>
-        <pre>},</pre>
-        <pre>error => {</pre>
+        <pre>} <span class="intro-code-keyword">catch </span>(error) {</pre>
         <pre>  console.error(error);</pre>
-        <pre>});</pre>
+        <pre>};</pre>
       </section>
     `;
     const steps = [
@@ -261,12 +283,13 @@ class Browser extends DashboardView {
       },
       {
         eventId: 'Custom Class and Object Creation',
-        element: () => document.querySelector('.toolbar-help-section > a'),
+        element: () => document.querySelectorAll('[class^=section__]')[2],
         intro: `It’s very simple to save data on Back4App from your front-end.<br /><br />
         On the <b>API Reference</b> section, you can find the auto-generated code below that creates a class and persist data on it.<br />
         ${createClassCode}
         <p class="intro-code-run">Click on the <b>Run</b> button to execute this code.</p>`,
-        position: 'right'
+        position: 'right',
+        tooltipClass: 'tourThirdStepStyle'
       },
       {
         eventId: 'Custom Class Link',
@@ -284,12 +307,6 @@ class Browser extends DashboardView {
         eventId: 'Create a Class Button',
         element: () => document.querySelector('[class^="section_contents"] [class^=subitem] a[class^=action]'),
         intro: `You can also create classes and manage your data directly through the Dashboard.`,
-        position: 'bottom'
-      },
-      {
-        eventId: 'Contextual Help',
-        element: () => document.querySelector('.toolbar-help-section'),
-        intro: `At any time, you can get specific help accessing this contextual section.`,
         position: 'bottom'
       },
       {
@@ -357,9 +374,8 @@ class Browser extends DashboardView {
             }
             break;
           case 2:
-            this._introItems[2].element = document.querySelector(
-              ".toolbar-help-section > a"
-            );
+            const stepElement = document.querySelector('.introjs-helperNumberLayer');
+            stepElement.style.marginLeft = '20px';
             nextButton = getNextButton();
             nextButton.innerHTML = "Run";
             break;
@@ -549,6 +565,10 @@ class Browser extends DashboardView {
     this.setState({ rowsToDelete: rows });
   }
 
+  showColumnDelete(name) {
+    this.setState({ columnToDelete: name });
+  }
+
   showDropClass() {
     this.setState({ showDropClassDialog: true });
   }
@@ -632,6 +652,21 @@ class Browser extends DashboardView {
     });
   }
 
+  newColumn(payload, required) {
+    return this.props.schema.dispatch(ActionTypes.ADD_COLUMN, payload)
+      .then(() => {
+        if (required) {
+          let requiredCols = [...this.state.requiredColumnFields, name];
+          this.setState({
+            requiredColumnFields: requiredCols
+          });
+        }
+      })
+      .catch((err) => {
+        this.showNote(err.message, true);
+      });
+  }
+
   addColumn({ type, name, target, required, defaultValue }) {
     let payload = {
       className: this.props.params.className,
@@ -641,14 +676,23 @@ class Browser extends DashboardView {
       required,
       defaultValue
     };
-    this.props.schema.dispatch(ActionTypes.ADD_COLUMN, payload).catch(error => {
-      let errorDeletingNote = 'Internal server error'
-      if (error.code === 403) errorDeletingNote = error.message;
+    this.newColumn(payload, required).finally(() => {
+      this.setState({ showAddColumnDialog: false, keepAddingCols: false });
+    });
+  }
 
-      this.showNote(errorDeletingNote, true);
-      this.setState({ showAddColumnDialog: false });
-    }).finally(() => {
-      this.setState({ showAddColumnDialog: false });
+  addColumnAndContinue({ type, name, target, required, defaultValue }) {
+    let payload = {
+      className: this.props.params.className,
+      columnType: type,
+      name: name,
+      targetClass: target,
+      required,
+      defaultValue
+    };
+    this.newColumn(payload, required).finally(() => {
+      this.setState({ showAddColumnDialog: false, keepAddingCols: false });
+      this.setState({ showAddColumnDialog: true, keepAddingCols: true });
     });
   }
 
@@ -691,7 +735,7 @@ class Browser extends DashboardView {
     this.showEditRowDialog();
   }
 
-  removeColumn(name) {
+  removeColumn(name, selectedColumn = false) {
     let payload = {
       className: this.props.params.className,
       name: name
@@ -701,10 +745,13 @@ class Browser extends DashboardView {
       if (error.code === 403) errorDeletingNote = error.message;
 
       this.showNote(errorDeletingNote, true);
-      this.setState({ showRemoveColumnDialog: false });
+      if (selectedColumn) 
+        this.setState({ columnToDelete: null });
+      else 
+        this.setState({ showRemoveColumnDialog: false });
 
     }).finally(() => {
-      let state = { showRemoveColumnDialog: false };
+      let state = selectedColumn ? { columnToDelete : null } : {showRemoveColumnDialog: false };
       if (this.state.ordering === name || this.state.ordering === '-' + name) {
         state.ordering = '-createdAt';
       }
@@ -1492,7 +1539,7 @@ class Browser extends DashboardView {
         }
         browser = (
           <DataBrowser
-            ref='dataBrowser'
+            ref="dataBrowser"
             isUnique={this.state.isUnique}
             uniqueField={this.state.uniqueField}
             count={count}
@@ -1502,6 +1549,7 @@ class Browser extends DashboardView {
             filters={this.state.filters}
             onFilterChange={this.updateFilters}
             onRemoveColumn={this.showRemoveColumn}
+            onDeleteSelectedColumn={this.showColumnDelete}
             onDeleteRows={this.showDeleteRows}
             onDropClass={this.showDropClass}
             onExport={this.showExport}
@@ -1539,7 +1587,8 @@ class Browser extends DashboardView {
             err={this.state.err}
             showNote={this.showNote}
             onClickIndexManager={this.onClickIndexManager}
-            onClickSecurity={this.onClickSecurity} />
+            onClickSecurity={this.onClickSecurity}
+          />
         );
       }
     }
@@ -1547,6 +1596,8 @@ class Browser extends DashboardView {
     if (this.state.showCreateClassDialog) {
       extras = (
         <CreateClassDialog
+          currentAppSlug={this.context.currentApp.slug}
+          onAddColumn={this.showAddColumn}
           currentClasses={this.props.schema.data.get('classes').keySeq().toArray()}
           onCancel={() => this.setState({ showCreateClassDialog: false })}
           onConfirm={this.createClass} />
@@ -1559,11 +1610,13 @@ class Browser extends DashboardView {
       });
       extras = (
         <AddColumnDialog
+          onAddColumn={this.showAddColumn}
           app={this.context.currentApp}
           currentColumns={currentColumns}
           classes={this.props.schema.data.get('classes').keySeq().toArray()}
           onCancel={() => this.setState({ showAddColumnDialog: false })}
           onConfirm={this.addColumn}
+          onContinue={this.addColumnAndContinue}
           parseServerVersion={currentApp.serverInfo && currentApp.serverInfo.parseServerVersion}
           showNote={this.showNote} />
       );
@@ -1708,9 +1761,7 @@ class Browser extends DashboardView {
     } else if (this.state.openSecurityDialog) {
       let parseServerSupportsPointerPermissions = this.context.currentApp
         .serverInfo.features.schemas.editClassLevelPermissions;
-      let currentColumns = this.getClassColumns(className).map(
-        column => column.name
-      );
+      let currentColumns = this.getClassColumns(className);
       const userPointers = [];
       const schemaSimplifiedData = {};
       const classSchema = this.props.schema.data
@@ -1766,6 +1817,14 @@ class Browser extends DashboardView {
           }
         />
       );
+    } else if (this.state.columnToDelete) {
+      extras = (
+        <ConfirmDeleteColumnDialog 
+          field={this.state.columnToDelete}
+          onCancel={() => this.setState({ columnToDelete: null })}
+          onConfirm={() => this.removeColumn(this.state.columnToDelete, true)}
+        />
+      )
     }
 
     let notification = null;

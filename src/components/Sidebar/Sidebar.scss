@@ -17,6 +17,7 @@
   background: #0c5582;
   color: #fff;
   transition: left 0.5s ease-in;
+  z-index: 0;
 
   &.collapsed {
     left: 0;
@@ -156,9 +157,22 @@
     white-space: nowrap;
   }
 
-  > *:not(:first-child) {
+  span.appStatus {
+    display: flex;
+    height: 26px;
+    line-height: 26px;
+    margin: 0 5px;
+    align-items: center;
+  }
+
+  > *:last-child {
     float: right;
   }
+}
+
+.disabledLink {
+  pointer-events: none;
+  color: #788C97;
 }
 
 .currentApp {

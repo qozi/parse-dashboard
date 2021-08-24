@@ -80,10 +80,17 @@ body:global(.expanded) {
   text-transform: uppercase;
   font-size: 8px;
   letter-spacing: 1.6px;
-  margin-bottom: 5px;
+  margin-right: 4px;
 }
 
 .subsection {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.subsectionName {
   font-size: 18px;
   vertical-align: bottom;
   margin-right: 10px;
@@ -91,7 +98,10 @@ body:global(.expanded) {
 
 .details {
   color: #80848f;
-  font-size: 12px;
+  font-size: 10px;
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
 }
 
 .actions {
@@ -101,16 +111,24 @@ body:global(.expanded) {
   display: flex;
   align-items: center;
   top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
 }
 
 .publicAccess {
   display: inline-flex;
-  margin-left: 15px;
+  // margin-left: 5px;
   align-items: center;
+  cursor: pointer;
   .publicAccessIcon {
     height: 15px;
     width: 15px;
     margin-right: 5px;
+  }
+  .publicAccessLink {
+    cursor: pointer;
   }
   a {
     cursor: default;
@@ -118,5 +136,19 @@ body:global(.expanded) {
     border-left: none;
     text-decoration: underline;
     color: white;
+  }
+}
+
+.mr5 {
+  margin-right: 5px;
+}
+
+@media (max-width: 774px) {
+  .seperatorVertical {
+    display: none;
+  }
+
+  .publicAccess {
+    display: none;
   }
 }

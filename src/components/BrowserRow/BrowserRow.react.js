@@ -19,12 +19,13 @@ export default class BrowserRow extends Component {
   }
 
   render() {
-    const { className, columns, currentCol, isUnique, obj, onPointerClick, order, readOnlyFields, row, rowWidth, selection, selectRow, setCopyableValue, setCurrent, setEditing, setRelation, onEditSelectedRow, setContextMenu, onFilterChange } = this.props;
+    const { className, columns, currentCol, isUnique, obj, onPointerClick, order, readOnlyFields, row, rowWidth, selection, selectRow, setCopyableValue, setCurrent, setEditing, setRelation, onEditSelectedRow, setContextMenu, onFilterChange, onAddRow, onAddColumn, onDeleteRows, onDeleteSelectedColumn } = this.props;
     let attributes = obj.attributes;
     return (
       <div className={styles.tableRow} style={{ minWidth: rowWidth }}>
         <span className={styles.checkCell}>
           <input
+            disabled={row < 0}
             type='checkbox'
             checked={selection['*'] || selection[obj.id]}
             onChange={e => selectRow(obj.id, e.target.checked)} />
@@ -92,7 +93,12 @@ export default class BrowserRow extends Component {
               hidden={hidden}
               setCopyableValue={setCopyableValue}
               setContextMenu={setContextMenu}
-              onEditSelectedRow={onEditSelectedRow} />
+              onEditSelectedRow={onEditSelectedRow}
+              onAddRow={onAddRow}
+              onAddColumn={onAddColumn}
+              onDeleteRows={onDeleteRows}
+              onDeleteSelectedColumn={onDeleteSelectedColumn}
+              className={className} />
           );
         })}
       </div>
