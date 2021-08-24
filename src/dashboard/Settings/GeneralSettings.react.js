@@ -251,13 +251,14 @@ let ManageAppFields = ({
                   }
                   let accountLockoutJson = {};
                   if ( accountLockout ) {
-                    let json = JSON.parse(accountLockout);
+                    let json = typeof accountLockout === 'string' ? JSON.parse(accountLockout) : accountLockout;
                     if ( 'resetTokenValidityDuration' in json ) {
                       delete json['resetTokenValidityDuration'];
                     }
                     accountLockoutJson = json;
                   }
-                  setParseOptions(JSON.stringify({ ...parseOptions, ...accountLockoutJson, resetTokenValidityDuration } ));
+                  const options = typeof parseOptions === 'string' ? JSON.parse(parseOptions) : {};
+                  setParseOptions(JSON.stringify({ ...options, ...accountLockoutJson, resetTokenValidityDuration } ));
                 }} />
             }
           />
@@ -279,7 +280,8 @@ let ManageAppFields = ({
                     }
                     accountLockoutJson = json;
                   }
-                  setParseOptions(JSON.stringify({ ...parseOptions, ...accountLockoutJson, resetTokenReuseIfValid } ));
+                  const options = typeof parseOptions === 'string' ? JSON.parse(parseOptions) : {};
+                  setParseOptions(JSON.stringify({ ...options, ...accountLockoutJson, resetTokenReuseIfValid } ));
                 }} />
             }
           />
@@ -301,7 +303,8 @@ let ManageAppFields = ({
                     }
                     accountLockoutJson = json;
                   }
-                  setParseOptions(JSON.stringify({ ...parseOptions, ...accountLockoutJson, validatorCallback }));
+                  const options = typeof parseOptions === 'string' ? JSON.parse(parseOptions) : {};
+                  setParseOptions(JSON.stringify({ ...options, ...accountLockoutJson, validatorCallback } ));
                 }} />
             }
           />
@@ -323,7 +326,8 @@ let ManageAppFields = ({
                     }
                     accountLockoutJson = json;
                   }
-                  setParseOptions(JSON.stringify({ ...parseOptions, ...accountLockoutJson, validatorPattern }));
+                  const options = typeof parseOptions === 'string' ? JSON.parse(parseOptions) : {};
+                  setParseOptions(JSON.stringify({ ...options, ...accountLockoutJson, validatorPattern } ));
                 }} />
             }
           />
@@ -345,7 +349,8 @@ let ManageAppFields = ({
                     }
                     accountLockoutJson = json;
                   }
-                  setParseOptions(JSON.stringify({ ...parseOptions, ...accountLockoutJson, validationError }));
+                  const options = typeof parseOptions === 'string' ? JSON.parse(parseOptions) : {};
+                  setParseOptions(JSON.stringify({ ...options, ...accountLockoutJson, validationError } ));
                 }} />
             }
           />
@@ -367,7 +372,8 @@ let ManageAppFields = ({
                     }
                     accountLockoutJson = json;
                   }
-                  setParseOptions(JSON.stringify({ ...parseOptions, ...accountLockoutJson, doNotAllowUsername }));
+                  const options = typeof parseOptions === 'string' ? JSON.parse(parseOptions) : {};
+                  setParseOptions(JSON.stringify({ ...options, ...accountLockoutJson, doNotAllowUsername } ));
                 }} />
             }
           />
@@ -390,7 +396,8 @@ let ManageAppFields = ({
                     }
                     accountLockoutJson = json;
                   }
-                  setParseOptions(JSON.stringify({ ...parseOptions, ...accountLockoutJson, maxPasswordAge }));
+                  const options = typeof parseOptions === 'string' ? JSON.parse(parseOptions) : {};
+                  setParseOptions(JSON.stringify({ ...options, ...accountLockoutJson, maxPasswordAge } ));
                 }} />
             }
           />
@@ -413,7 +420,8 @@ let ManageAppFields = ({
                     }
                     accountLockoutJson = json;
                   }
-                  setParseOptions(JSON.stringify({ ...parseOptions, ...accountLockoutJson, maxPasswordHistory }));
+                  const options = typeof parseOptions === 'string' ? JSON.parse(parseOptions) : {};
+                  setParseOptions(JSON.stringify({ ...options, ...accountLockoutJson, maxPasswordHistory } ));
                 }} />
             }
           />
@@ -449,14 +457,16 @@ let ManageAppFields = ({
                     console.error(e);
                     return;
                   }
-                  let passwordPolicyJson = {};
-                  if ( passwordPolicy ) {
-                    let json = JSON.parse(passwordPolicy);
-                    if ( 'threshold' in json ) {
-                      passwordPolicyJson = { threshold: json.threshold }
+                  let accountLockoutJson = {};
+                  if ( accountLockout ) {
+                    let json = JSON.parse(accountLockout);
+                    if ( 'duration' in json ) {
+                      delete json['duration'];
                     }
+                    accountLockoutJson = json;
                   }
-                  setParseOptions(JSON.stringify({ ...parseOptions, ...passwordPolicyJson, duration }));
+                  const options = typeof parseOptions === 'string' ? JSON.parse(parseOptions) : {};
+                  setParseOptions(JSON.stringify({ ...options, ...accountLockoutJson, duration } ));
                 }} />
             }
           />
@@ -481,14 +491,16 @@ let ManageAppFields = ({
                     console.error(e);
                     return;
                   }
-                  let passwordPolicyJson = {};
-                  if ( passwordPolicy ) {
-                    let json = JSON.parse(passwordPolicy);
-                    if ( 'duration' in json ) {
-                      passwordPolicyJson = { duration: json.duration }
+                  let accountLockoutJson = {};
+                  if ( accountLockout ) {
+                    let json = JSON.parse(accountLockout);
+                    if ( 'threshold' in json ) {
+                      delete json['threshold'];
                     }
+                    accountLockoutJson = json;
                   }
-                  setParseOptions(JSON.stringify({ ...parseOptions, ...passwordPolicyJson, threshold }));
+                  const options = typeof parseOptions === 'string' ? JSON.parse(parseOptions) : {};
+                  setParseOptions(JSON.stringify({ ...options, ...accountLockoutJson, threshold } ));
                 }} />
             }
           />
@@ -940,13 +952,10 @@ let generalFieldsOptions = {
     friendlyName: 'app name',
     showTo: true,
   },
-  accountLockout: {
-    friendlyName: 'Account Lockout',
+  parseOptions: {
+    friendlyName: 'Parse Options',
     showTo: true,
-  },
-  passwordPolicy: {
-    friendlyName: 'Password Policy',
-    showTo: true,
+
   },
   //TODO: This will display 'enabled production' or 'disabled production' which is sub-optimal. Try to make it better.
   inProduction: {

@@ -8,8 +8,14 @@
 import PropTypes from 'lib/PropTypes';
 import React from 'react';
 import styles from 'components/NumericInput/NumericInput.scss';
+import Icon from 'components/Icon/Icon.react';
 
 export default class NumericInput extends React.Component {
+  constructor(){
+    super();
+    this.inputRef = React.createRef();
+  }
+
   componentWillReceiveProps(props) {
     if (props.multiline !== this.props.multiline) {
       const previousInput = this.refs.input;
@@ -42,18 +48,42 @@ export default class NumericInput extends React.Component {
       classes.push(styles.monospace);
     }
     return (
-      <input
-        ref="input"
-        id={this.props.id}
-        type={'number'}
-        min={this.props.min}
-        disabled={!!this.props.disabled}
-        className={classes.join(' ')}
-        style={{height: this.props.height || 80}}
-        placeholder={this.props.placeholder}
-        value={this.props.value}
-        onChange={this.changeValue.bind(this)}
-        onBlur={this.updateValue.bind(this)} />
+      <div style={{ display: 'flex', alignItems: 'center', background: '#f6fafb' }}>
+        <input
+          ref={this.inputRef}
+          id={this.props.id}
+          type={'number'}
+          min={this.props.min}
+          disabled={!!this.props.disabled}
+          className={classes.join(' ')}
+          style={{height: this.props.height || 80}}
+          placeholder={this.props.placeholder}
+          value={this.props.value}
+          onChange={this.changeValue.bind(this)}
+          onBlur={this.updateValue.bind(this)} />
+          <div>
+            <Icon onClick={() => {
+              if ( this.inputRef?.current ) {
+                let val = this.inputRef?.current.value;
+                if ( val === '' ) {
+                  val = 0;
+                }
+                this.inputRef.current.value = parseInt(val) + 1;
+                this.props.onChange(this.inputRef.current.value);
+              }
+            }} name='input-up-icon' width={24} height={24} fill='#218bec' />
+            <Icon onClick={() => {
+              if ( this.inputRef?.current ) {
+                let val = this.inputRef?.current.value;
+                if ( val === '' ) {
+                  val = 0;
+                }
+                this.inputRef.current.value = parseInt(val) - 1;
+                this.props.onChange(this.inputRef.current.value);
+              }
+            }} name='input-down-icon' width={24} height={24} fill='#218bec' />
+          </div>
+        </div>
     );
   }
 }
