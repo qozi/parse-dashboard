@@ -797,8 +797,8 @@ export default class GeneralSettings extends DashboardView {
           if (changes.requestLimit !== undefined) {
             promiseList.push(this.context.currentApp.setRequestLimit(changes.requestLimit));
           }
-          if (changes.appName !== undefined || changes.accountLockout !== undefined || changes.passwordPolicy !== undefined) {
-            promiseList.push(this.context.currentApp.setAppConfig(changes.appName, changes.accountLockout, changes.passwordPolicy));
+          if (changes.appName !== undefined || changes.parseOptions !== undefined ) {
+            promiseList.push(this.context.currentApp.setAppConfig(changes.appName, changes.parseOptions));
           }
           if (changes.inProduction !== undefined) {
             promiseList.push(this.context.currentApp.setInProduction(changes.inProduction));
