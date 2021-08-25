@@ -49,7 +49,6 @@ const AppsManager = {
       payload.parse_app.connectionString = connectionURL;
     }
     return post('/apps', payload).then((response) => {
-      console.log(response);
       let newApp = new ParseApp(response.app);
       appsStore.push(newApp);
       return newApp;
