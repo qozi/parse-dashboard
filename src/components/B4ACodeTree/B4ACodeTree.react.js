@@ -143,11 +143,6 @@ export default class B4ACodeTree extends React.Component {
             selectedFile = selected.text
             nodeId = selected.id
             extension = B4ATreeActions.getExtension(selectedFile)
-<<<<<<< HEAD
-
-            // this.setState({ source, selectedFile, nodeId, extension, isImage })
-=======
->>>>>>> 528226c00212373c974ba19a88edcdc1e5e3a1d1
           }
         } else {
           source = selected.data.code;
