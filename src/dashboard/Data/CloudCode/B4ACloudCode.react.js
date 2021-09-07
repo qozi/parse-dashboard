@@ -8,6 +8,7 @@
 import React           from 'react';
 import { withRouter }  from 'react-router';
 import history         from 'dashboard/history';
+import $               from 'jquery';
 import axios           from 'axios'
 import B4AAlert        from 'components/B4AAlert/B4AAlert.react';
 import Button          from 'components/Button/Button.react';
@@ -41,6 +42,9 @@ class B4ACloudCode extends CloudCode {
       loading: true,
       unsavedChanges: false,
       modal: null,
+
+      // updated cloudcode files.
+      currentCode: [],
 
       // Parameters used to on/off alerts
       showTips: localStorage.getItem(this.alertTips) !== 'false',
@@ -111,10 +115,22 @@ class B4ACloudCode extends CloudCode {
     })
   }
 
+  syncCurCode( nodesOnTree, currentCode ){
+    return nodesOnTree.map( (node, idx) => {
+      if (  node.data?.code !== currentCode[idx].data?.code  ) {
+        node.data.code = currentCode[idx].data?.code;
+      }
+      if ( node.children.length > 0 ) {
+        node.children = this.syncCurCode(node.children, currentCode[idx].children);
+      }
+      return node;
+    });
+  }
+
   async uploadCode() {
     let tree = [];
     // Get current files on tree
-    let currentCode = getFiles();
+    let currentCode = this.syncCurCode(getFiles(), this.state.currentCode);
     const missingFileModal = (
       <Modal
         type={Modal.Types.DANGER}
@@ -180,7 +196,8 @@ class B4ACloudCode extends CloudCode {
         confirmText='Ok, got it'
         onConfirm={() => this.setState({ modal: null })}
         />;
-      this.setState({ unsavedChanges: false, modal: successModal })
+      this.setState({ unsavedChanges: false, modal: successModal });
+      $('#tree').jstree(true).refresh();
     } catch (err) {
       const errorModal = <Modal
         type={Modal.Types.DANGER}
@@ -229,8 +246,9 @@ class B4ACloudCode extends CloudCode {
 
     let alertWhatIsMessage = <div>
       <p style={{height:"auto"}}>
-        Upload(by clicking on ADD button) and Deploy your main.js file(containing your functions inside) to start running javascript functions on Back4App Servers.
-        Find a sample code on the section below to use as a reference. For more details, check our Cloud Code guide <a href="https://www.back4app.com/docs/get-started/cloud-functions">https://www.back4app.com/docs/get-started/cloud-functions</a>.
+        First, you must create a file called main.js with all your javascript-based functions inside.
+        After that, upload it by clicking on the ADD button and then click on the DEPLOY button.
+        For more details, check our Cloud Code guide <a href="https://www.back4app.com/docs/get-started/cloud-functions">https://www.back4app.com/docs/get-started/cloud-functions</a>.
       </p>
     </div>
 
@@ -252,10 +270,11 @@ class B4ACloudCode extends CloudCode {
       alertWhatIs = <B4AAlert
         show={true}
         handlerCloseEvent={this.handlerCloseAlert.bind(this)}
-        title="What is Cloud Code Functions"
+        title="How to deploy your functions"
         description={alertWhatIsMessage} />
 
       content = <B4ACodeTree
+        setCurrentCode={(newCode) => this.setState({ currentCode: newCode })}
         files={this.state.files}
         parentState={this.setState.bind(this)}
         currentApp={this.context.currentApp}
