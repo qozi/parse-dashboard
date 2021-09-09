@@ -235,6 +235,9 @@ let ManageAppFields = ({
     if ( parseOptionsJson instanceof Array ) {
       parseOptionsJson = parseOptionsJson[0];
     }
+    if ( !('accountLockout' in parseOptionsJson) || !('passwordPolicy' in parseOptionsJson) ) {
+      parseOptionsJson = { accountLockout: {}, passwordPolicy: {} };
+    }
   }
 
   return (
