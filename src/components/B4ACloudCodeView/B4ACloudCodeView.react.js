@@ -69,7 +69,7 @@ export default class B4ACloudCodeView extends React.Component {
       style.hljs.height = '100%';
       style.hljs.padding = '1em 0.5em';
     }
-  return <div style={{ height: this.props.source.length > pageSize ? '320px' : '367px' }}>
+    return <div style={{ height: this.props.source.length > pageSize ? '320px' : '367px' }}>
       <CodeEditor code={this.props.source} onCodeChange={ value => this.props.onCodeChange(value) } />
     </div>;
   }
