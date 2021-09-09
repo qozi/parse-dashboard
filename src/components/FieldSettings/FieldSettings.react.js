@@ -14,14 +14,6 @@ let FieldSettings = ({label, input, labelWidth = 50, labelPadding, height, class
   if (className) {
     classes.push(className);
   }
-  // labelWidth = labelWidth || 50;
-  // minHeight = minHeight || '';
-  // if (label && labelPadding) {
-  //   label = React.cloneElement(
-  //     label,
-  //     { ...label.props, padding: labelPadding }
-  //   );
-  // }
   return (
     <div className={classes.join(' ')} style={{minHeight, padding}}>
       <div className={styles.left} style={{ height: height, minHeight }}>
