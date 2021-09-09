@@ -13,6 +13,7 @@ export const replaceSettingsInJson = ( jsonToUpdate, key ) => {
 }
 
 export const getSettingsFromKey = ( json, key ) => {
+  console.log(json, key, json[key]);
   return json && key in json ? json[key] : ''
 }
 
